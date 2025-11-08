@@ -1,0 +1,5 @@
+# File scope shares an instance within one t_*.yaml file and resets it for the next one.
+type: ResettableFixture
+name: resettable
+scope: File
+auto_start: true

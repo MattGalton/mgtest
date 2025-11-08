@@ -1,0 +1,12 @@
+tests:
+  - type: S3ObjectExists
+    name: s3_object_exists
+    bucket: "${mgtest:resources.bucket.outputs.bucket}"
+    key: "${mgtest:resources.object.outputs.key}"
+    endpoint_url: http://s3.fixture.invalid
+  - type: S3ObjectMatches
+    name: s3_object_matches
+    bucket: "${mgtest:resources.bucket.outputs.bucket}"
+    key: "${mgtest:resources.object.outputs.key}"
+    equals: "answer=42"
+    endpoint_url: http://s3.fixture.invalid

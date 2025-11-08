@@ -1,0 +1,4 @@
+type: ArchiveFixture
+name: archive
+directory: "${mgtest:resources.workspace.outputs.path}"
+message: "${vars.message}"

@@ -1,0 +1,13 @@
+tests:
+  # This check dirties its own resource instance.
+  - type: FixtureState
+    name: dirties_resource
+    resource: resettable
+    expected_state: fresh
+    set_state: dirty
+
+  # Test scope must create a fresh resource for this next check.
+  - type: FixtureState
+    name: gets_fresh_resource_in_new_check
+    resource: resettable
+    expected_state: fresh

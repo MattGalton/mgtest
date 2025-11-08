@@ -1,0 +1,4 @@
+type: ArchiveContains
+name: fixture_archive
+path: "${mgtest:resources.archive.outputs.archive_path}"
+contains: [message.txt]

@@ -1,0 +1,19 @@
+<idea-plugin>
+  <id>io.github.mgtest.lsp</id>
+  <name>mgtest LSP</name>
+  <vendor email="Matt.Galton@outlook.com" url="https://github.com/mgtest/mgtest">mgtest</vendor>
+
+  <depends>com.intellij.modules.platform</depends>
+  <depends>com.intellij.modules.lsp</depends>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <platform.lsp.integrationProvider implementation="io.github.mgtest.jetbrains.MgtestLspIntegrationProvider"/>
+    <projectConfigurable id="preferences.mgtest.lsp" parentId="tools" displayName="mgtest"
+                         instance="io.github.mgtest.jetbrains.MgtestLspConfigurable"/>
+  </extensions>
+
+  <actions>
+    <action id="io.github.mgtest.lsp.restart" class="io.github.mgtest.jetbrains.RestartMgtestLspAction"
+            text="Restart mgtest Language Server" description="Restart the mgtest language server for this project"/>
+  </actions>
+</idea-plugin>

@@ -1,0 +1,22 @@
+[build-system]
+requires = ["uv_build>=0.11.25,<0.12"]
+build-backend = "uv_build"
+
+[project]
+name = "mgtest-redis"
+version = "0.1.0"
+description = "Redis resource and checks for mgtest"
+requires-python = ">=3.12"
+dependencies = ["mgtest-core>=0.1,<0.2", "redis>=5,<7"]
+
+[project.entry-points."mgtest.resources"]
+Redis = "mgtest_redis:Redis"
+
+[project.entry-points."mgtest.tests"]
+RedisQuery = "mgtest_redis:RedisQuery"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.uv.sources]
+mgtest-core = { workspace = true }

@@ -1,0 +1,23 @@
+repos:
+  # Black: Python code formatter
+  - repo: https://github.com/psf/black
+    rev: 24.10.0
+    hooks:
+      - id: black
+        language_version: python3.12
+
+  # Ruff: Linter + import sorter
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.6.8
+    hooks:
+      - id: ruff
+        args: [--fix, --unsafe-fixes]     # Auto-fix linting issues where possible
+
+  # Mypy: Static type checking
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.12.0         # Use latest version of mypy mirror
+    hooks:
+      - id: mypy
+        args: [--ignore-missing-imports, --show-error-codes, --explicit-package-bases]
+        files: ^src/[^/]+/src/.*\.py$
+        additional_dependencies: ["pydantic>=2.12,<3", types-PyYAML, types-redis]

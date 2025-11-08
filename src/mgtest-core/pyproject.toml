@@ -1,0 +1,47 @@
+[build-system]
+requires = ["uv_build>=0.11.25,<0.12"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "mgtest"
+
+[project]
+name = "mgtest-core"
+version = "0.1.0"
+description = "Declarative, extensible system-test orchestration for pytest"
+requires-python = ">=3.12"
+dependencies = [
+    "jsonschema>=4.23,<5",
+    "omegaconf>=2.3,<3",
+    "pydantic>=2.12,<3",
+    "PyYAML>=6,<7",
+    "pytest>=8.3,<10",
+]
+
+[project.optional-dependencies]
+docker = ["mgtest-docker>=0.1,<0.2"]
+redis = ["mgtest-redis>=0.1,<0.2"]
+sql = ["mgtest-sql>=0.1,<0.2"]
+s3 = ["mgtest-s3>=0.1,<0.2"]
+nats = ["mgtest-nats>=0.1,<0.2"]
+services = ["mgtest-docker>=0.1,<0.2", "mgtest-redis>=0.1,<0.2", "mgtest-sql>=0.1,<0.2"]
+all = ["mgtest-docker>=0.1,<0.2", "mgtest-redis>=0.1,<0.2", "mgtest-sql>=0.1,<0.2", "mgtest-s3>=0.1,<0.2", "mgtest-nats>=0.1,<0.2"]
+lsp = ["mgtest-lsp>=0.1,<0.2"]
+
+[project.scripts]
+mgtest = "mgtest.cli.main:main"
+mgtest-schema = "mgtest.cli.mgtest_schema:main"
+
+[project.entry-points.pytest11]
+mgtest = "mgtest.engine.runner"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.uv.sources]
+mgtest-docker = { workspace = true }
+mgtest-redis = { workspace = true }
+mgtest-sql = { workspace = true }
+mgtest-s3 = { workspace = true }
+mgtest-nats = { workspace = true }
+mgtest-lsp = { workspace = true }

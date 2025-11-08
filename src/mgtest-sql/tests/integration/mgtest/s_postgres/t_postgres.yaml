@@ -1,0 +1,11 @@
+tests:
+  - type: SqlQuery
+    name: sql_query
+    dsn: "${mgtest:resources.database.outputs.dsn}"
+    query: select %s
+    parameters: [42]
+    expected_scalar: 42
+  - type: PortAvailable
+    name: port_available
+    host: 127.0.0.1
+    port: 50123

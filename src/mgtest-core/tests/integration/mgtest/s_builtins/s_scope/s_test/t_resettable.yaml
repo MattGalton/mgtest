@@ -1,0 +1,13 @@
+tests:
+  # This check leaves state behind for the next check in this file.
+  - type: FixtureState
+    name: dirties_resource
+    resource: resettable
+    expected_state: fresh
+    set_state: dirty
+
+  # File scope keeps the same resource instance for every check in this file.
+  - type: FixtureState
+    name: retains_resource_within_file
+    resource: resettable
+    expected_state: dirty

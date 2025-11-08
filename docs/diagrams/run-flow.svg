@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="210" viewBox="0 0 900 210" role="img" aria-label="YAML is planned by mgtest, resources are started, checks run, and artifacts are saved.">
+  <style>
+    text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #172554; }
+    .box { fill: #eff6ff; stroke: #2563eb; stroke-width: 2; rx: 14; }
+    .arrow { stroke: #64748b; stroke-width: 2.5; fill: none; marker-end: url(#arrow); }
+    .title { font-size: 17px; font-weight: 650; } .detail { font-size: 13px; fill: #475569; }
+  </style>
+  <defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#64748b"/></marker></defs>
+  <rect class="box" x="18" y="62" width="150" height="84"/><text class="title" x="93" y="96" text-anchor="middle">YAML</text><text class="detail" x="93" y="118" text-anchor="middle">resources + tests</text>
+  <path class="arrow" d="M168 104 H218"/>
+  <rect class="box" x="220" y="62" width="150" height="84"/><text class="title" x="295" y="96" text-anchor="middle">mgtest</text><text class="detail" x="295" y="118" text-anchor="middle">plans the graph</text>
+  <path class="arrow" d="M370 104 H420"/>
+  <rect class="box" x="422" y="62" width="150" height="84"/><text class="title" x="497" y="96" text-anchor="middle">Resources</text><text class="detail" x="497" y="118" text-anchor="middle">start when needed</text>
+  <path class="arrow" d="M572 104 H622"/>
+  <rect class="box" x="624" y="62" width="120" height="84"/><text class="title" x="684" y="96" text-anchor="middle">Checks</text><text class="detail" x="684" y="118" text-anchor="middle">pytest items</text>
+  <path class="arrow" d="M744 104 H794"/>
+  <rect class="box" x="796" y="62" width="86" height="84"/><text class="title" x="839" y="96" text-anchor="middle">Run</text><text class="detail" x="839" y="118" text-anchor="middle">artifacts</text>
+</svg>

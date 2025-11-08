@@ -1,0 +1,11 @@
+resources:
+  - type: S3Bucket
+    name: bucket
+    bucket: mgtest-integration-bucket
+    endpoint_url: http://s3.fixture.invalid
+  - type: S3Object
+    name: object
+    bucket: "${mgtest:resources.bucket.outputs.bucket}"
+    key: answer.txt
+    body: "answer=${vars.number}"
+    endpoint_url: http://s3.fixture.invalid

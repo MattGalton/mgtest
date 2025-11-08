@@ -1,0 +1,24 @@
+[build-system]
+requires = ["uv_build>=0.11.25,<0.12"]
+build-backend = "uv_build"
+
+[project]
+name = "mgtest-s3"
+version = "0.1.0"
+description = "Amazon S3 resources and checks for mgtest"
+requires-python = ">=3.12"
+dependencies = ["boto3>=1.35,<2", "mgtest-core>=0.1,<0.2"]
+
+[project.entry-points."mgtest.resources"]
+S3Bucket = "mgtest_s3:S3Bucket"
+S3Object = "mgtest_s3:S3Object"
+
+[project.entry-points."mgtest.tests"]
+S3ObjectExists = "mgtest_s3:S3ObjectExists"
+S3ObjectMatches = "mgtest_s3:S3ObjectMatches"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.uv.sources]
+mgtest-core = { workspace = true }

@@ -1,0 +1,25 @@
+[build-system]
+requires = ["uv_build>=0.11.25,<0.12"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "mgtest_nats"
+
+[project]
+name = "mgtest-nats"
+version = "0.1.0"
+description = "NATS server resource and subscription checks for mgtest"
+requires-python = ">=3.12"
+dependencies = ["mgtest-core>=0.1,<0.2", "nats-py>=2.10,<3"]
+
+[project.entry-points."mgtest.resources"]
+NatsServer = "mgtest_nats:NatsServer"
+
+[project.entry-points."mgtest.tests"]
+NatsSubscribe = "mgtest_nats:NatsSubscribe"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.uv.sources]
+mgtest-core = { workspace = true }

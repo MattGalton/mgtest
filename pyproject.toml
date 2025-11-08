@@ -1,0 +1,45 @@
+[tool.uv.workspace]
+members = ["src/mgtest-*"]
+exclude = ["src/mgtest-lsp-jetbrains"]
+
+[dependency-groups]
+dev = ["black>=24.10", "mypy>=1.12", "ruff>=0.6.8"]
+
+[tool.mgtest.packages]
+core = "mgtest-core"
+docker = "mgtest-docker"
+redis = "mgtest-redis"
+sql = "mgtest-sql"
+s3 = "mgtest-s3"
+nats = "mgtest-nats"
+lsp = "mgtest-lsp"
+
+[tool.pytest.ini_options]
+testpaths = [
+    "src/mgtest-core/tests",
+    "src/mgtest-docker/tests",
+    "src/mgtest-redis/tests",
+    "src/mgtest-sql/tests",
+    "src/mgtest-s3/tests",
+    "src/mgtest-nats/tests",
+    "src/mgtest-lsp/tests",
+]
+markers = [
+    "real_integration: requires Docker and a configured S3-compatible endpoint",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.black]
+line-length = 100
+target-version = ["py312"]
+
+[tool.mypy]
+python_version = "3.12"
+plugins = ["pydantic.mypy"]
+ignore_missing_imports = true

@@ -1,0 +1,9 @@
+type: JsonSchema
+name: nested_schema
+document: {message: "${vars.message}", number: "${vars.number}"}
+schema:
+  type: object
+  required: [message, number]
+  properties:
+    message: {const: "nested suite"}
+    number: {const: 42}

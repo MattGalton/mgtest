@@ -1,0 +1,9 @@
+tests:
+  - type: Command
+    name: shell_command
+    shell_command: "printf '${vars.message}'"
+    stdout_contains: "deeply nested suite"
+  - type: Command
+    name: python_command
+    python_command: "print('${vars.message}')"
+    stdout_contains: "deeply nested suite"

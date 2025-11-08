@@ -1,0 +1,5 @@
+type: RedisQuery
+name: redis_query
+url: "${mgtest:resources.redis.outputs.url}"
+command: [GET, answer]
+expected: "42"
