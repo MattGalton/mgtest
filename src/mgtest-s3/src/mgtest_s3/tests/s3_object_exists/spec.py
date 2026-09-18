@@ -10,7 +10,9 @@ class S3ObjectExists(TestSpec):
     bucket: str = Field(description="S3 bucket containing the object.")
     key: str = Field(description="Object key that must exist.")
     region: str = Field(default="us-east-1", description="AWS region for the S3 client.")
-    endpoint_url: str | None = Field(default=None, description="Optional S3-compatible endpoint URL.")
+    endpoint_url: str | None = Field(
+        default=None, description="Optional S3-compatible endpoint URL."
+    )
 
     class Output(BaseModel):
         exists: bool = Field(default=False, description="Whether the object exists.")

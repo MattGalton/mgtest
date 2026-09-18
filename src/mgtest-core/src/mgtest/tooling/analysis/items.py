@@ -8,6 +8,8 @@ from pathlib import Path
 from types import UnionType
 from typing import Any, Literal, Union, get_args, get_origin
 
+from pydantic import BaseModel
+
 
 class AnalysisItems:
     """Construct completion and documentation values without project access."""
@@ -135,10 +137,11 @@ class AnalysisItems:
         }
 
     @staticmethod
-    def type(name: str, cls: type, kind: str, prefix: str) -> dict[str, Any]:
+    def type(name: str, cls: type[BaseModel], kind: str, prefix: str) -> dict[str, Any]:
         documentation = (cls.__doc__ or f"mgtest {kind} type").strip()
         summary = documentation.splitlines()[0]
-        indent = re.match(r"\s*", prefix).group()
+        match = re.match(r"\s*", prefix)
+        indent = match.group() if match else ""
         required = [
             field_name
             for field_name, field in cls.model_fields.items()
@@ -179,8 +182,7 @@ class AnalysisItems:
         description = field.description or f"`{field.annotation}`"
         type_documentation = (cls.__doc__ or "").strip()
         documentation = (
-            f"Output `{kind}.{name}.outputs.{output_name}` from `{cls.__name__}`.\n\n"
-            f"{description}"
+            f"Output `{kind}.{name}.outputs.{output_name}` from `{cls.__name__}`.\n\n{description}"
         )
         if type_documentation:
             documentation += f"\n\n{type_documentation}"

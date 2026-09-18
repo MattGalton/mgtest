@@ -2,9 +2,11 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, cast
 
+from mgtest.api._definitions import SpecBase
 from mgtest.api.resource import ResourceScope
+from mgtest.api.test import TestSpec
 from mgtest.engine.project.graph import DependencyGraph
 from mgtest.engine.project.model import Definition, ProjectError, ProjectModel, SourceLocation
 from mgtest.engine.project.references import (
@@ -165,11 +167,11 @@ class ProjectCompiler:
     def compile(self, model: ProjectModel) -> CompiledProject:
         logger.info("Compiling project %s", model.root)
         self.model = model
-        self.classes = {}
-        self.cache = {}
-        self.active = []
+        self.classes: dict[str, type[SpecBase]] = {}
+        self.cache: dict[tuple[str, tuple], Any] = {}
+        self.active: list[tuple[str, tuple]] = []
         self.graph = DependencyGraph()
-        self.references = []
+        self.references: list[ReferenceBinding] = []
         self._register_node_types()
         self._resolve_variables()
         definitions = self._compile_nodes()
@@ -204,7 +206,7 @@ class ProjectCompiler:
 
     def _compile_nodes(self) -> dict[str, CompiledDefinition]:
         """Resolve configuration, validate literals, and add dependency edges."""
-        definitions = {}
+        definitions: dict[str, CompiledDefinition] = {}
         for identity, definition in self.model.definitions.items():
             data = self.value(identity, ())
             cls = self.classes[identity]
@@ -217,7 +219,7 @@ class ProjectCompiler:
                 try:
                     compiled.spec = cls.model_validate(data)
                     if isinstance(compiled, CompiledTest):
-                        compiled.spec.source_path = definition.source.path
+                        cast(TestSpec, compiled.spec).source_path = definition.source.path
                 except ValueError as error:
                     error.add_note(str(definition.source))
                     raise
@@ -263,6 +265,7 @@ class ProjectCompiler:
                         raise ProjectError(
                             "Resources cannot depend on test results", node.definition.source
                         )
+                    assert isinstance(required, CompiledResource)
                     if node.scope == ResourceScope.SUITE and required.scope == ResourceScope.TEST:
                         raise ProjectError(
                             "Suite resource cannot depend on a Test-scoped resource",
@@ -293,17 +296,17 @@ class ProjectCompiler:
         )
         if not selected:
             raise ValueError(f"No tests defined in {model.suites[model.selection].path}")
-        schemas = {
-            identity: {
+        schemas = {}
+        for identity, cls in self.classes.items():
+            output = cls.output_model()
+            schemas[identity] = {
                 "input": authored_schema(cls),
                 "output": (
-                    cls.output_model().model_json_schema()
-                    if cls.output_model()
+                    output.model_json_schema()
+                    if output is not None
                     else {"type": "object", "additionalProperties": True}
                 ),
             }
-            for identity, cls in self.classes.items()
-        }
         compiled = CompiledProject(
             model, definitions, self.graph, order, selected, schemas, tuple(self.references)
         )

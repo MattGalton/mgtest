@@ -10,14 +10,20 @@ from mgtest.engine.builtin.tests.stream_regex.instance import StreamRegexTestIns
 class StreamRegex(TestSpec):
     """Wait for a byte regular expression in an Executable output stream."""
 
-
     class Output(BaseModel):
         found: bool = Field(default=False, description="Whether the pattern was found.")
 
     resource: str = Field(description="Visible Executable resource whose output is monitored.")
     pattern: str = Field(description="Byte regular expression required in the selected stream.")
-    stream: Literal["stdout", "stderr"] = Field(default="stdout", description="Executable output stream to monitor.")
-    timeout: float = Field(default=10.0, gt=0, allow_inf_nan=False, description="Maximum seconds to wait for the pattern.")
+    stream: Literal["stdout", "stderr"] = Field(
+        default="stdout", description="Executable output stream to monitor."
+    )
+    timeout: float = Field(
+        default=10.0,
+        gt=0,
+        allow_inf_nan=False,
+        description="Maximum seconds to wait for the pattern.",
+    )
 
     @field_validator("pattern")
     @classmethod

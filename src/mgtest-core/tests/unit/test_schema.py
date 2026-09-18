@@ -23,9 +23,7 @@ def test_definition_schemas_accept_project_documents(tmp_path):
         )
     schema = {"$ref": generator.test_top_level_path.as_uri()}
     validator = Draft202012Validator(schema, registry=registry)
-    assert validator.is_valid(
-        {"type": "FileExists", "name": "exists", "path": "${vars.path}"}
-    )
+    assert validator.is_valid({"type": "FileExists", "name": "exists", "path": "${vars.path}"})
 
 
 def test_schema_cli_maps_root_config_files(tmp_path, monkeypatch):

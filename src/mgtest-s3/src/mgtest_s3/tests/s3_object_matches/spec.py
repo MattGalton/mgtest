@@ -12,7 +12,9 @@ class S3ObjectMatches(TestSpec):
     contains: str | None = Field(default=None, description="Text that must occur in the object.")
     equals: str | None = Field(default=None, description="Exact text required for the object.")
     region: str = Field(default="us-east-1", description="AWS region for the S3 client.")
-    endpoint_url: str | None = Field(default=None, description="Optional S3-compatible endpoint URL.")
+    endpoint_url: str | None = Field(
+        default=None, description="Optional S3-compatible endpoint URL."
+    )
 
     class Output(BaseModel):
         content: str = Field(default="", description="Text content read from the object.")

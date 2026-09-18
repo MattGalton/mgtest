@@ -33,7 +33,7 @@ def graph_dot(compiled) -> str:
     lines = ["digraph mgtest {", "  rankdir=LR;"]
     for key, node in compiled.definitions.items():
         shape = "box" if isinstance(node, CompiledResource) else "ellipse"
-        label = f'{node.definition.name}\\n{node.definition.data["type"]}'
+        label = f"{node.definition.name}\\n{node.definition.data['type']}"
         lines.append(f'  "{key}" [label="{label}", shape={shape}];')
     for dependent, prerequisites in compiled.graph.dependencies.items():
         for prerequisite in sorted(prerequisites):
@@ -46,7 +46,9 @@ def graph_mermaid(compiled) -> str:
     lines = ["flowchart LR"]
     for key, node in compiled.definitions.items():
         bracket = ("[", "]") if isinstance(node, CompiledResource) else ("(", ")")
-        lines.append(f'{names[key]}{bracket[0]}"{node.definition.name}<br/>{node.definition.data["type"]}"{bracket[1]}')
+        lines.append(
+            f'{names[key]}{bracket[0]}"{node.definition.name}<br/>{node.definition.data["type"]}"{bracket[1]}'
+        )
     for dependent, prerequisites in compiled.graph.dependencies.items():
         for prerequisite in sorted(prerequisites):
             lines.append(f"{names[prerequisite]} --> {names[dependent]}")

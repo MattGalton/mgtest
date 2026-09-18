@@ -18,7 +18,9 @@ class JsonBaseline(TestSpec):
     class Output(BaseModel):
         """The JSON value read from the generated document."""
 
-        document: Any | None = Field(default=None, description="JSON value read from the generated file.")
+        document: Any | None = Field(
+            default=None, description="JSON value read from the generated file."
+        )
 
     def create_instance(self) -> JsonBaselineInstance:
         """Create the semantic JSON comparator."""

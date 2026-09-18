@@ -9,7 +9,9 @@ class TcpConnect(TestSpec):
 
     host: str = Field(description="Host name or address to connect to.")
     port: int = Field(ge=1, le=65535, description="TCP port that must accept a connection.")
-    timeout: float = Field(default=10.0, gt=0, description="Maximum seconds to wait for a connection.")
+    timeout: float = Field(
+        default=10.0, gt=0, description="Maximum seconds to wait for a connection."
+    )
     interval: float = Field(default=0.1, gt=0, description="Seconds between connection attempts.")
 
     class Output(BaseModel):

@@ -38,10 +38,11 @@ class OutcomeAssessment:
 
 def assess_outcome(expected: ExpectedOutcome, actual: ActualOutcome) -> OutcomeAssessment:
     """Assess one actual check result against its declarative expectation."""
-    disposition = {
+    dispositions: dict[tuple[ExpectedOutcome, ActualOutcome], OutcomeDisposition] = {
         ("passed", "passed"): "matched_pass",
         ("failed", "failed"): "matched_failure",
         ("passed", "failed"): "unexpected_failure",
         ("failed", "passed"): "unexpected_pass",
-    }[expected, actual]
+    }
+    disposition = dispositions[expected, actual]
     return OutcomeAssessment(expected, actual, disposition)

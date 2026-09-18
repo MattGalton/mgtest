@@ -10,7 +10,9 @@ class NatsSubscribe(TestSpec):
     url: str = Field(description="NATS server connection URL.")
     subject: str = Field(description="Subject on which to wait for a message.")
     timeout: float = Field(default=10.0, gt=0, description="Maximum seconds to wait for a message.")
-    payload: str | None = Field(default=None, description="Optional exact payload required for the message.")
+    payload: str | None = Field(
+        default=None, description="Optional exact payload required for the message."
+    )
 
     class Output(BaseModel):
         subject: str = Field(default="", description="Subject of the received message.")

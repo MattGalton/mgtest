@@ -1,5 +1,5 @@
 import logging
-from collections.abc import Iterator
+from collections.abc import ItemsView, ValuesView
 
 logger = logging.getLogger(__name__)
 
@@ -22,10 +22,10 @@ class PluginRegistry[T: type]:
         """Get all registered types - needed for LSP"""
         return list(self._registry.keys())
 
-    def items(self) -> Iterator[tuple[str, T]]:
+    def items(self) -> ItemsView[str, T]:
         return self._registry.items()
 
-    def values(self) -> Iterator[T]:
+    def values(self) -> ValuesView[T]:
         return self._registry.values()
 
     def __getitem__(self, key: str) -> T:

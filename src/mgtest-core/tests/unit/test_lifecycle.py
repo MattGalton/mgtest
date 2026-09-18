@@ -103,9 +103,7 @@ def test_workspace_reports_resource_and_test_logs_for_failures(tmp_path, caplog)
     workspace.resource("suite::resources.database", instance=resource, error=RuntimeError("setup"))
     workspace.test("suite::tests.check", instance=test, error=AssertionError("check"))
     resource_logs = workspace.path / "resources" / "suite__resources.database" / "logs.txt"
-    assert resource_logs.read_text() == (
-        "database diagnostics"
-    )
+    assert resource_logs.read_text() == ("database diagnostics")
     assert (workspace.path / "tests" / "suite__tests.check" / "logs.txt").read_text() == (
         "assertion diagnostics"
     )

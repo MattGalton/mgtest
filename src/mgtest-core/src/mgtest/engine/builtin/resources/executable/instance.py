@@ -24,4 +24,6 @@ class ExecutableInstance(ResourceInstance):
 
     def value(self):
         return self._exe
+
+
 logger = logging.getLogger(__name__)

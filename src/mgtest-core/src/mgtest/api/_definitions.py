@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
+from builtins import type as builtin_type
 from typing import ClassVar
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
@@ -26,9 +27,11 @@ class SpecBase(BaseModel, ABC):
         return cls.TYPE or cls.__name__
 
     @classmethod
-    def output_model(cls) -> type[BaseModel] | None:
+    def output_model(cls) -> builtin_type[BaseModel] | None:
         output = getattr(cls, "Output", None)
-        return output if isinstance(output, type) and issubclass(output, BaseModel) else None
+        return (
+            output if isinstance(output, builtin_type) and issubclass(output, BaseModel) else None
+        )
 
     @model_validator(mode="after")
     def _type_matches_class(self):

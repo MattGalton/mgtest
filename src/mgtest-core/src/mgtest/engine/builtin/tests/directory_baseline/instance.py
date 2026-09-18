@@ -26,16 +26,14 @@ class DirectoryBaselineInstance(TestInstance):
         actual = _tree(Path(self.definition.path))
         baseline = baseline_path(self.definition.baseline, self.definition.source_path)
         expected = _tree(baseline)
-        assert actual == expected, (
-            f"Directory differs from baseline: {baseline}"
-        )
+        assert actual == expected, f"Directory differs from baseline: {baseline}"
         return sorted(actual)
 
 
 def _tree(root: Path) -> dict[str, tuple[str, bytes | str | None]]:
     """Return a portable representation of all entries below *root*."""
     assert root.is_dir(), f"Directory does not exist: {root}"
-    entries = {}
+    entries: dict[str, tuple[str, bytes | str | None]] = {}
     for path in sorted(root.rglob("*")):
         relative = path.relative_to(root).as_posix()
         if path.is_symlink():

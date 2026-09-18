@@ -10,7 +10,7 @@ import uuid
 from dataclasses import asdict, is_dataclass
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 import yaml
 
@@ -50,7 +50,7 @@ class RunWorkspace:
         self.path = runtime_path(root) / self.category / run_id
         self.path.mkdir(parents=True, exist_ok=False)
         self.cache = cache
-        self.manifest = {
+        self.manifest: dict[str, Any] = {
             "run_id": run_id,
             "started_at": now(),
             "status": "running",
@@ -187,24 +187,18 @@ def _resolved_config(compiled) -> dict:
     resources = getattr(compiled, "resources", {})
     tests = getattr(compiled, "tests", {})
     return {
-        "resources": {
-            identity: _plain(node.data)
-            for identity, node in resources.items()
-        },
-        "tests": {
-            identity: _plain(node.data)
-            for identity, node in tests.items()
-        },
+        "resources": {identity: _plain(node.data) for identity, node in resources.items()},
+        "tests": {identity: _plain(node.data) for identity, node in tests.items()},
         "test_order": list(compiled.test_order),
     }
 
 
 def _plain(value: Any) -> Any:
-    if is_dataclass(value):
-        return _plain(asdict(value))
+    if is_dataclass(value) and not isinstance(value, type):
+        return _plain(asdict(cast(Any, value)))
     if isinstance(value, dict):
         return {str(key): _plain(item) for key, item in value.items()}
-    if isinstance(value, (list, tuple)):
+    if isinstance(value, list | tuple):
         return [_plain(item) for item in value]
     if isinstance(value, Path):
         return str(value)

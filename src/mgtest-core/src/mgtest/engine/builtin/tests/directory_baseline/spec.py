@@ -17,7 +17,9 @@ class DirectoryBaseline(TestSpec):
     class Output(BaseModel):
         """The relative entries found in the generated tree."""
 
-        entries: list[str] = Field(default_factory=list, description="Relative paths found in the generated tree.")
+        entries: list[str] = Field(
+            default_factory=list, description="Relative paths found in the generated tree."
+        )
 
     def create_instance(self) -> DirectoryBaselineInstance:
         """Create the recursive directory comparator."""

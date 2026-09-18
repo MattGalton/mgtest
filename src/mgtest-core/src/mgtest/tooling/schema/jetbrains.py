@@ -2,7 +2,7 @@ import logging
 import shutil
 from pathlib import Path
 from xml.dom import minidom
-from xml.etree.ElementTree import Element, ElementTree, SubElement, tostring
+from xml.etree.ElementTree import Element, SubElement, tostring
 
 from pydantic import BaseModel
 
@@ -39,10 +39,7 @@ class _Application(BaseModel):
     def write_xml(self, path: Path):
         """Write pretty-printed XML to the given path"""
         path.parent.mkdir(parents=True, exist_ok=True)
-        raw_xml = ElementTree(self.to_xml_element())
-
-        # Convert to string
-        xml_str = tostring(raw_xml.getroot(), encoding="utf-8")
+        xml_str = tostring(self.to_xml_element(), encoding="utf-8")
 
         # Pretty-print with minidom
         parsed = minidom.parseString(xml_str)

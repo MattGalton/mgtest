@@ -7,12 +7,9 @@ from mgtest.project.selection import select
 def test_project_variables_resolve_environment_and_other_variables(tmp_path, monkeypatch):
     monkeypatch.setenv("MGTEST_LOADING_HOST", "example.test")
     (tmp_path / "vars.yaml").write_text(
-        "host: '${oc.env:MGTEST_LOADING_HOST,localhost}'\n"
-        "url: 'https://${vars.host}/health'\n"
+        "host: '${oc.env:MGTEST_LOADING_HOST,localhost}'\nurl: 'https://${vars.host}/health'\n"
     )
-    (tmp_path / "t_check.yaml").write_text(
-        "type: FileExists\nname: check\npath: '${vars.url}'\n"
-    )
+    (tmp_path / "t_check.yaml").write_text("type: FileExists\nname: check\npath: '${vars.url}'\n")
 
     assert load_project(tmp_path).suites["."].variables == {
         "host": "example.test",
@@ -37,9 +34,7 @@ def test_project_variable_resolution_preserves_execution_references(tmp_path):
 
 def test_loader_requires_s_prefix_for_directories_and_groups_existing_checks(tmp_path):
     for name in ("first", "second"):
-        (tmp_path / f"t_{name}.yaml").write_text(
-            f"type: FileExists\nname: {name}\npath: .\n"
-        )
+        (tmp_path / f"t_{name}.yaml").write_text(f"type: FileExists\nname: {name}\npath: .\n")
     ignored = tmp_path / "ordinary"
     ignored.mkdir()
     (ignored / "t_ignored.yaml").write_text("type: FileExists\nname: ignored\npath: .\n")

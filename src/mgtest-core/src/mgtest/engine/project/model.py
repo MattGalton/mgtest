@@ -71,15 +71,22 @@ class ProjectModel:
     documents: dict[Path, str] = field(default_factory=dict)
 
     def ancestors(self, suite: str):
-        while suite is not None:
-            node = self.suites[suite]
+        current: str | None = suite
+        while current is not None:
+            node = self.suites[current]
             yield node
-            suite = node.parent
+            current = node.parent
 
     def visible(self, suite: str, kind: str) -> dict[str, str]:
-        result = {}
+        result: dict[str, str] = {}
         for node in self.ancestors(suite):
-            for name, identity in getattr(node, kind).items():
+            if kind == "resources":
+                namespace = node.resources
+            elif kind == "tests":
+                namespace = node.tests
+            else:
+                raise ValueError(f"Unknown definition kind: {kind}")
+            for name, identity in namespace.items():
                 result.setdefault(name, identity)
         return result
 
@@ -103,7 +110,14 @@ class ProjectModel:
             if definition.kind == "tests" and self.contains_suite(suite, definition.suite)
         )
 
-    def add_definition(self, suite: Suite, kind: str, data: dict, source, locations=None):
+    def add_definition(
+        self,
+        suite: Suite,
+        kind: Literal["resources", "tests"],
+        data: dict[str, Any],
+        source: SourceLocation,
+        locations: dict[tuple, SourceLocation] | None = None,
+    ) -> Definition:
         data = dict(data)
         depends_on = data.pop("depends_on", [])
         valid_dependencies = isinstance(depends_on, list) and all(
@@ -116,7 +130,7 @@ class ProjectModel:
             raise ProjectError(
                 "Definition names must be nonempty and cannot contain . : { }", source
             )
-        namespace = getattr(suite, kind)
+        namespace = suite.resources if kind == "resources" else suite.tests
         if name in namespace:
             previous = self.definitions[namespace[name]]
             raise ProjectError(

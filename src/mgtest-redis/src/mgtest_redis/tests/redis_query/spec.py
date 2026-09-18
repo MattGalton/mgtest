@@ -10,7 +10,9 @@ class RedisQuery(TestSpec):
     """Execute a Redis command and assert that its returned value matches."""
 
     url: str = Field(description="Redis connection URL.")
-    command: list[str | int | float] = Field(min_length=1, description="Redis command and its arguments.")
+    command: list[str | int | float] = Field(
+        min_length=1, description="Redis command and its arguments."
+    )
     expected: Any = Field(description="Value required from the Redis command.")
 
     class Output(BaseModel):

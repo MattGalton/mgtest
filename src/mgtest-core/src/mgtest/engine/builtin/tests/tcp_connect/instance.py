@@ -12,6 +12,7 @@ logger = logging.getLogger(__name__)
 class TcpConnectInstance(TestInstance):
     def run(self, resources):
         logger.debug("Connecting to %s:%s", self.definition.host, self.definition.port)
+
         def connect():
             address = (self.definition.host, self.definition.port)
             with socket.create_connection(address, self.definition.interval):

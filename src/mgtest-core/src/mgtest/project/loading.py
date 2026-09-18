@@ -23,18 +23,12 @@ def load_project(root: Path) -> ProjectModel:
     layout = ProjectLayout(root)
     directories = [
         root,
-        *sorted(
-            path
-            for path in root.rglob("*")
-            if layout.is_discoverable_directory(path)
-        ),
+        *sorted(path for path in root.rglob("*") if layout.is_discoverable_directory(path)),
     ]
     for directory in directories:
         identifier = "." if directory == root else directory.relative_to(root).as_posix()
         parent = (
-            None
-            if identifier == "."
-            else (directory.parent.relative_to(root).as_posix() or ".")
+            None if identifier == "." else (directory.parent.relative_to(root).as_posix() or ".")
         )
         model.suites[identifier] = Suite(identifier, directory, parent)
         if parent is not None:
@@ -45,8 +39,7 @@ def load_project(root: Path) -> ProjectModel:
             (
                 suite.path / name
                 for name in ("vars.yaml", "vars.yml")
-                if (suite.path / name).is_file()
-                and layout.is_variables_document(suite.path / name)
+                if (suite.path / name).is_file() and layout.is_variables_document(suite.path / name)
             ),
             None,
         )
@@ -71,9 +64,7 @@ def load_project(root: Path) -> ProjectModel:
                         if prerequisite not in dependencies:
                             dependencies.append(prerequisite)
                         data["depends_on"] = dependencies
-                    definition = model.add_definition(
-                        suite, "tests", data, SourceLocation(path)
-                    )
+                    definition = model.add_definition(suite, "tests", data, SourceLocation(path))
                     previous_name = definition.name
     _load_suite_manifests(model, layout)
     if not any(suite.tests for suite in model.suites.values()):
@@ -92,8 +83,7 @@ def _load_suite_manifests(model: ProjectModel, layout: ProjectLayout) -> None:
     manifests = sorted(
         path
         for path in model.root.rglob("s_*.y*ml")
-        if layout.is_mgtest_suite_document(path)
-        and layout.is_discoverable_directory(path.parent)
+        if layout.is_mgtest_suite_document(path) and layout.is_discoverable_directory(path.parent)
     )
     for path in manifests:
         identifier = path.with_suffix("").relative_to(model.root).as_posix()

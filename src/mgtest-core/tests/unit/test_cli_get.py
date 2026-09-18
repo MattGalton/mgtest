@@ -53,7 +53,7 @@ def test_get_prepares_resource_closure_and_writes_a_manifest(tmp_path, capsys):
 
 def test_get_command_starts_and_stops_resources(tmp_path):
     log = _project(tmp_path)
-    args = _args([str(tmp_path), "s_smoke/check", "--command", "test -n \"$MGTEST_GET_DIR\""])
+    args = _args([str(tmp_path), "s_smoke/check", "--command", 'test -n "$MGTEST_GET_DIR"'])
 
     assert args.func(args) == 0
     assert log.read_text().splitlines() == ["prepare", "start", "stop"]

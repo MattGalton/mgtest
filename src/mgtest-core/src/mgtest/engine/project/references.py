@@ -68,7 +68,7 @@ def output_references(value):
     elif isinstance(value, dict):
         for item in value.values():
             yield from output_references(item)
-    elif isinstance(value, (list, tuple)):
+    elif isinstance(value, list | tuple):
         for item in value:
             yield from output_references(item)
 
@@ -89,7 +89,7 @@ def get_path(value, path):
     for key in path:
         if isinstance(value, dict):
             value = value[key]
-        elif isinstance(value, (list, tuple)):
+        elif isinstance(value, list | tuple):
             value = value[int(key)]
         else:
             value = getattr(value, key)

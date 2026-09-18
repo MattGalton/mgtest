@@ -194,9 +194,7 @@ class CompletionProvider:
         ):
             return False
         current_indent = len(lines[line]) - len(lines[line].lstrip())
-        type_line = re.compile(
-            r"^(?P<indent>\s*)(?P<item>-\s*)?(?:type|specialises)\s*:\s*\S"
-        )
+        type_line = re.compile(r"^(?P<indent>\s*)(?P<item>-\s*)?(?:type|specialises)\s*:\s*\S")
         for previous in reversed(lines[:line]):
             if match := type_line.match(previous):
                 field_indent = len(match.group("indent")) + (2 if match.group("item") else 0)

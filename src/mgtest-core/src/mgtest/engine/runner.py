@@ -135,10 +135,7 @@ class MgtestCheck(pytest.Item):
 
 def pytest_collect_directory(parent, path):
     candidate = Path(str(path))
-    if (
-        candidate.name == "mgtest"
-        and not (candidate / "pyproject.toml").exists()
-    ):
+    if candidate.name == "mgtest" and not (candidate / "pyproject.toml").exists():
         return MgtestProject.from_parent(parent, path=path)
     return None
 

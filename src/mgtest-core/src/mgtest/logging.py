@@ -28,7 +28,7 @@ def setup_logging(level: int | None = None, log_file: Path | None = None) -> Non
     called by the CLI entry point, leaving pytest and embedding applications in
     control of their own logging handlers and capture settings.
     """
-    handlers = []
+    handlers: list[logging.Handler] = []
 
     # Console handler
     console_handler = logging.StreamHandler()

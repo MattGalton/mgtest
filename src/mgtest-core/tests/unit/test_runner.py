@@ -23,9 +23,17 @@ def make_project(pytester, monkeypatch, scope="Suite"):
         "    log: str\n"
         "    def create_instance(self): return ProbeInstance(self)\n"
     )
-    (project / "r_probe.yaml").write_text(json.dumps({
-        "type": "Probe", "name": "probe", "log": str(log), "auto_start": True, "scope": scope,
-    }))
+    (project / "r_probe.yaml").write_text(
+        json.dumps(
+            {
+                "type": "Probe",
+                "name": "probe",
+                "log": str(log),
+                "auto_start": True,
+                "scope": scope,
+            }
+        )
+    )
     (project / "t_missing.yaml").write_text(
         json.dumps({"type": "FileExists", "name": "missing", "path": str(pytester.path / "absent")})
     )
@@ -122,8 +130,6 @@ def test_nested_suites_are_reflected_in_pytest_nodeids(pytester, monkeypatch):
         )
     )
 
-    result = pytester.runpytest_subprocess(
-        "-p", "mgtest.engine.runner", "--collect-only", "-q"
-    )
+    result = pytester.runpytest_subprocess("-p", "mgtest.engine.runner", "--collect-only", "-q")
 
     result.stdout.fnmatch_lines(["*mgtest::s_smoke::s_critical::nested_check*"])

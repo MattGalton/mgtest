@@ -5,9 +5,10 @@ from __future__ import annotations
 import logging
 from collections.abc import Mapping
 from dataclasses import dataclass
+from pathlib import Path
 
 from mgtest.api.events import ExecutionOutcome, LifecycleEvent, LifecycleListener
-from mgtest.api.resource import ResourceScope
+from mgtest.api.resource import ResourceInstance, ResourceScope
 from mgtest.engine.outcomes import OutcomeAssessment, assess_outcome
 from mgtest.engine.project.compiler import CompiledTest
 from mgtest.engine.project.model import ProjectError
@@ -36,8 +37,10 @@ def _log_event(event: LifecycleEvent) -> None:
         ("test", "run", "failed"): "Failed",
         ("test", "run", "expected_failed"): "Failed as expected",
     }[event.kind, event.phase, event.status]
-    level = logging.ERROR if event.status == "failed" else (
-        TRACE_LEVEL if event.phase == "teardown" else logging.INFO
+    level = (
+        logging.ERROR
+        if event.status == "failed"
+        else (TRACE_LEVEL if event.phase == "teardown" else logging.INFO)
     )
     logger.log(level, "%s %s %s '%s'", action, event.type_name, event.kind, event.name)
 
@@ -46,7 +49,7 @@ def _log_event(event: LifecycleEvent) -> None:
 class ResourceState:
     """All mutable lifecycle facts for one resource identity."""
 
-    instance: object | None = None
+    instance: ResourceInstance | None = None
     prepared: bool = False
     started: bool = False
     error: BaseException | None = None
@@ -68,7 +71,7 @@ class ScopeCoordinator:
 
     def __init__(self, session: ExecutionSession):
         self.session = session
-        self.test_file = None
+        self.test_file: Path | None = None
 
     def before_check(self, node: CompiledTest) -> None:
         """Close File-scoped resources when moving to another YAML document."""
@@ -393,10 +396,13 @@ class ExecutionSession:
             if not predicate(node):
                 continue
             state = self.resource_states[identity]
+            instance = state.instance
+            if instance is None:
+                continue
             try:
                 self.emit(self._event(identity, "resource", "teardown", "started"))
                 self.workspace.resource(identity, instance=state.instance)
-                state.instance.teardown()
+                instance.teardown()
                 self.emit(self._event(identity, "resource", "teardown", "passed"))
             except BaseException as error:
                 error.add_note(f"Resource {identity} at {node.definition.source}")

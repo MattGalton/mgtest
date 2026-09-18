@@ -97,6 +97,6 @@ def _environment(session, workspace) -> dict[str, str]:
             continue
         prefix = "MGTEST_RESOURCE_" + identity.replace("::resources.", "_").upper()
         for key, value in values.items():
-            if isinstance(value, (str, int, float, bool)):
+            if isinstance(value, str | int | float | bool):
                 environment[f"{prefix}_{key.upper()}"] = str(value)
     return environment

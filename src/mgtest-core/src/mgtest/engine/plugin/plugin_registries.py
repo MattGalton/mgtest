@@ -9,4 +9,3 @@ class PluginCatalog:
 
     resources: PluginRegistry = field(default_factory=PluginRegistry)
     tests: PluginRegistry = field(default_factory=PluginRegistry)
-

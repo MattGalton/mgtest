@@ -32,6 +32,8 @@ class ValidationProvider:
             data = yaml.safe_load(source) or {}
         except yaml.MarkedYAMLError as error:
             mark = error.problem_mark
+            if mark is None:
+                return [Diagnostic(error.problem or "Invalid YAML")]
             return [Diagnostic(error.problem or "Invalid YAML", mark.line, mark.column)]
         if not isinstance(data, dict):
             return [Diagnostic("YAML document must be a mapping")]

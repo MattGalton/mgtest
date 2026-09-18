@@ -4,11 +4,12 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 import yaml
-from pydantic import create_model
+from pydantic import BaseModel, create_model
 
+from mgtest.api._definitions import SpecBase
 from mgtest.api.resource import ResourceSpec
 from mgtest.api.test import TestSpec
 from mgtest.engine.plugin.plugin_registries import PluginCatalog, PluginRegistry
@@ -107,28 +108,27 @@ def specialisation_parent(
     parent_name = data.get(_SPECIALISATION_FIELD)
     if not isinstance(parent_name, str) or not parent_name:
         raise ValueError(
-            f"YAML specialisation {source} requires a nonempty "
-            f"'{_SPECIALISATION_FIELD}' field"
+            f"YAML specialisation {source} requires a nonempty '{_SPECIALISATION_FIELD}' field"
         )
     parent = registry.get(parent_name)
     if parent is None:
         raise ValueError(f"Unknown {kind[:-1]} type '{parent_name}'")
     base_type = ResourceSpec if kind == "resources" else TestSpec
     if not issubclass(parent, base_type):
-        raise ValueError(
-            f"{source} specialises {parent_name!r}, which is not a {kind[:-1]} type"
-        )
+        raise ValueError(f"{source} specialises {parent_name!r}, which is not a {kind[:-1]} type")
     return parent
 
 
-def specialisation_defaults(source: Path, data: dict[str, Any], parent: type) -> dict[str, Any]:
+def specialisation_defaults(
+    source: Path, data: dict[str, Any], parent: type[SpecBase]
+) -> dict[str, Any]:
     """Validate and return the defaults supplied by a YAML specialisation."""
     defaults = {key: value for key, value in data.items() if key != _SPECIALISATION_FIELD}
     _validate_defaults(source, defaults, parent)
     return defaults
 
 
-def _validate_defaults(path: Path, defaults: dict[str, Any], parent: type) -> None:
+def _validate_defaults(path: Path, defaults: dict[str, Any], parent: type[SpecBase]) -> None:
     forbidden = {"type", "name", _SPECIALISATION_FIELD} & defaults.keys()
     if forbidden:
         fields = ", ".join(sorted(forbidden))
@@ -139,18 +139,22 @@ def _validate_defaults(path: Path, defaults: dict[str, Any], parent: type) -> No
         raise ValueError(f"YAML specialisation {path} has unknown fields: {fields}")
 
 
-def _specialise(type_name: str, parent: type, defaults: dict[str, Any], source: Path) -> type:
+def _specialise(
+    type_name: str, parent: type[SpecBase], defaults: dict[str, Any], source: Path
+) -> type[SpecBase]:
     fields = {
-        name: (parent.model_fields[name].annotation, value)
-        for name, value in defaults.items()
+        name: (parent.model_fields[name].annotation, value) for name, value in defaults.items()
     }
-    result = create_model(
-        type_name,
-        __base__=parent,
-        __module__="mgtest.yaml_specialisations",
-        **fields,
+    result = cast(
+        type[SpecBase],
+        create_model(
+            type_name,
+            __base__=cast(type[BaseModel], parent),
+            __module__="mgtest.yaml_specialisations",
+            **cast(Any, fields),
+        ),
     )
     result.TYPE = type_name
     result.__doc__ = f"YAML specialisation of {parent.type_name()} declared in {source}."
-    result.__mgtest_specialisation_source__ = source
+    result.__mgtest_specialisation_source__ = source  # type: ignore[attr-defined]
     return result

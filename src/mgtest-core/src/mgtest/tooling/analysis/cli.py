@@ -22,21 +22,29 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     root = (args.root or ProjectLayout.find_root(args.paths[0]) or Path.cwd()).resolve()
     service = AnalysisService(root)
-    results = []
+    results: list[tuple[str, list[Diagnostic]]] = []
     for path in args.paths:
         path = path.resolve()
         try:
             diagnostics = service.analyse(path, path.read_text(encoding="utf-8"))
         except OSError as error:
             diagnostics = [Diagnostic(str(error), code="io")]
-        results.append({"path": str(path), "diagnostics": [asdict(item) for item in diagnostics]})
+        results.append((str(path), diagnostics))
     if args.json:
-        print(json.dumps(results, indent=2))
+        print(
+            json.dumps(
+                [
+                    {"path": path, "diagnostics": [asdict(item) for item in diagnostics]}
+                    for path, diagnostics in results
+                ],
+                indent=2,
+            )
+        )
     else:
-        for result in results:
-            for issue in result["diagnostics"]:
+        for path, diagnostics in results:
+            for issue in diagnostics:
                 print(
-                    f"{result['path']}:{issue['line'] + 1}:{issue['character'] + 1}: "
-                    f"{issue['code']}: {issue['message']}"
+                    f"{path}:{issue.line + 1}:{issue.character + 1}: "
+                    f"{issue.code}: {issue.message}"
                 )
-    return 1 if any(result["diagnostics"] for result in results) else 0
+    return 1 if any(diagnostics for _, diagnostics in results) else 0

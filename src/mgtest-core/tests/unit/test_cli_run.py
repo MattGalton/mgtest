@@ -36,9 +36,7 @@ def write_project(root):
         directory.mkdir()
         if suite == "s_other":
             (directory / "r_other.yaml").write_text(
-                json.dumps(
-                    {"type": "Probe", "name": "other", "log": str(log), "auto_start": True}
-                )
+                json.dumps({"type": "Probe", "name": "other", "log": str(log), "auto_start": True})
             )
         (directory / f"t_{suite}.yaml").write_text(
             json.dumps({"type": "FileExists", "name": f"{suite}_check", "path": str(root)})

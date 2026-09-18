@@ -7,7 +7,9 @@ from mgtest.engine.builtin.tests.port_available.instance import PortAvailableIns
 class PortAvailable(TestSpec):
     """Assert that a TCP port is available for a process to bind."""
 
-    host: str = Field(default="127.0.0.1", description="Interface on which to test port availability.")
+    host: str = Field(
+        default="127.0.0.1", description="Interface on which to test port availability."
+    )
     port: int = Field(ge=1, le=65535, description="TCP port that must be available to bind.")
 
     class Output(BaseModel):

@@ -19,9 +19,7 @@ class FileBaselineInstance(TestInstance):
         )
         size = self._compare()
         self.outputs.path = Path(self.definition.path)
-        self.outputs.baseline = baseline_path(
-            self.definition.baseline, self.definition.source_path
-        )
+        self.outputs.baseline = baseline_path(self.definition.baseline, self.definition.source_path)
         self.outputs.bytes = size
 
     def _compare(self) -> int:
