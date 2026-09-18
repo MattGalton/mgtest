@@ -4,7 +4,7 @@ repos:
     rev: 24.10.0
     hooks:
       - id: black
-        language_version: python3.11  # Adjust to your project's Python version
+        language_version: python3.12
 
   # Ruff: Linter + import sorter
   - repo: https://github.com/astral-sh/ruff-pre-commit
