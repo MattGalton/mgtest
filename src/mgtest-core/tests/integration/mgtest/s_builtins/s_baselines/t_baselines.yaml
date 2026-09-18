@@ -1,0 +1,22 @@
+tests:
+  - type: FileExists
+    name: producer_finished
+    depends_on: [resources.producer]
+    path: "${mgtest:resources.workspace.outputs.path}/.finished"
+    timeout: 2
+
+  - type: FileBaseline
+    name: file_matches_checked_in_baseline
+    depends_on: [resources.producer]
+    path: "${mgtest:resources.workspace.outputs.path}/actual.txt"
+    baseline: baselines/actual.txt
+
+  - type: JsonBaseline
+    name: json_matches_checked_in_baseline
+    path: "${mgtest:resources.workspace.outputs.path}/actual.json"
+    baseline: baselines/actual.json
+
+  - type: DirectoryBaseline
+    name: directory_matches_checked_in_baseline
+    path: "${mgtest:resources.workspace.outputs.path}/tree"
+    baseline: baselines/tree

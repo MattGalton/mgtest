@@ -1,0 +1,51 @@
+@startuml
+title mgtest — run sequence
+hide footbox
+skinparam shadowing false
+skinparam sequence {
+  ArrowColor #566573
+  LifeLineBorderColor #566573
+  LifeLineBackgroundColor #FEF9E7
+}
+
+actor "Developer / CI" as caller #D6EAF8
+box "Entry points" #D6EAF8
+participant "pytest plugin\nor mgtest run" as adapter #D6EAF8
+end box
+box "Extensions" #E8DAEF
+participant "Plugin importer\nand catalog" as plugins #E8DAEF
+end box
+box "Planning" #D5F5E3
+participant "Project loader" as loader #D5F5E3
+participant "Engine / compiler" as planner #D5F5E3
+end box
+box "Runtime" #FDEBD0
+participant "Execution session" as session #FDEBD0
+end box
+box "Evidence" #FADBD8
+participant "Run workspace" as workspace #FADBD8
+end box
+
+caller -> adapter : run project
+adapter -> plugins : load built-ins, entry points, builtin/
+plugins --> adapter : resource and test types
+adapter -> loader : load YAML project
+loader --> adapter : suites, variables, definitions
+adapter -> planner : compile(project, catalog)
+activate planner
+planner -> planner : validate types and references\nbuild dependency graph
+planner --> adapter : execution plan
+deactivate planner
+adapter -> workspace : create run directory\nwrite resolved configuration
+adapter -> session : execute plan
+activate session
+loop each selected check
+  session -> session : satisfy dependencies\nstart required resources
+  session -> workspace : record outputs, logs, or failure
+end
+session -> session : tear down remaining resources
+session --> adapter : results or error
+deactivate session
+adapter -> workspace : finalize manifest
+adapter --> caller : pytest report or CLI exit status
+@enduml

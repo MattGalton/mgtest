@@ -1,0 +1,5 @@
+type: Postgres
+name: database
+database: integration
+user: integration
+password: fixture-password

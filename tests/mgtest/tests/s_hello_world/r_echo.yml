@@ -1,7 +1,0 @@
-type: Executable
-name: echo
-path: python
-args:
-  - "-u"
-  - "-c"
-  - "print('Hello World')"

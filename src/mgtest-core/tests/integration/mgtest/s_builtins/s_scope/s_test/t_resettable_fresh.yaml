@@ -1,0 +1,6 @@
+tests:
+  # A new t_*.yaml file must receive a fresh resource instance.
+  - type: FixtureState
+    name: gets_fresh_resource_in_new_file
+    resource: resettable
+    expected_state: fresh

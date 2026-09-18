@@ -1,0 +1,8 @@
+type: JsonSchema
+name: redis_url
+document:
+  url: "${mgtest:resources.redis.outputs.url}"
+schema:
+  type: object
+  properties:
+    url: {const: "redis://127.0.0.1:56379/0"}

@@ -1,0 +1,15 @@
+type: Executable
+name: writer
+path: python3
+args:
+  - -u
+  - -c
+  - |
+    import time
+    from pathlib import Path
+    root = Path("${mgtest:resources.workspace.outputs.path}")
+    output = root / "output.txt"
+    output.write_text("X\n")
+    time.sleep(0.05)
+    output.write_text("X\nY\n")
+    (root / ".finished").write_text("finished\n")

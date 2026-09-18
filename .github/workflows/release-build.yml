@@ -1,0 +1,20 @@
+name: Release build
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+      - run: uv build --all-packages
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mgtest-distributions
+          path: dist/

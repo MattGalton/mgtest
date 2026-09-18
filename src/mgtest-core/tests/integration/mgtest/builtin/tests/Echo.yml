@@ -1,0 +1,3 @@
+specialises: Command
+python_command: "print('Hello world')"
+stdout_contains: Hello world

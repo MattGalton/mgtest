@@ -1,0 +1,20 @@
+[build-system]
+requires = ["uv_build>=0.11.25,<0.12"]
+build-backend = "uv_build"
+
+[project]
+name = "mgtest-docker"
+version = "0.1.0"
+description = "Docker resources for mgtest"
+requires-python = ">=3.12"
+dependencies = ["mgtest-core>=0.1,<0.2"]
+
+[project.entry-points."mgtest.resources"]
+DockerCompose = "mgtest_docker:DockerCompose"
+DockerContainer = "mgtest_docker:DockerContainer"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.uv.sources]
+mgtest-core = { workspace = true }

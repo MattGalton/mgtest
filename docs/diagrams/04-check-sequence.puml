@@ -1,0 +1,54 @@
+@startuml
+title mgtest — one check and its resource lifecycle
+hide footbox
+skinparam shadowing false
+skinparam sequence {
+  ArrowColor #566573
+  LifeLineBorderColor #566573
+  LifeLineBackgroundColor #FEF9E7
+}
+
+box "Execution" #FDEBD0
+participant "Execution session" as session #FDEBD0
+participant "Resource view" as view #FDEBD0
+end box
+box "Extensions" #E8DAEF
+participant "Resource spec\nand instance" as resource #E8DAEF
+participant "Test spec\nand instance" as test #E8DAEF
+end box
+box "Outside mgtest" #F2F3F4
+participant "System under test" as sut #F2F3F4
+end box
+box "Evidence" #FADBD8
+participant "Run workspace" as workspace #FADBD8
+end box
+
+session -> session : select check from compiled dependency graph
+loop each resource dependency
+  session -> resource : materialize and create instance
+  activate resource
+  resource -> sut : setup()
+  sut --> resource : ready resource value
+  resource --> session : instance and outputs
+  deactivate resource
+end
+session -> view : expose resources visible to this suite
+session -> test : materialize and create instance
+activate test
+test -> view : request resource by name
+view --> test : resource value
+test -> sut : run check
+sut --> test : response or observation
+test --> session : outputs
+deactivate test
+session -> workspace : write test outputs
+alt test-scoped resource
+  session -> resource : teardown()
+  resource -> sut : stop or clean up
+end
+note over session,workspace
+On an error, mgtest records failure evidence,
+tears down started resources in reverse order,
+and lets pytest or the CLI report the failure.
+end note
+@enduml

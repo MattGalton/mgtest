@@ -1,0 +1,7 @@
+# A fast representative group. The checks remain defined in their own suites;
+# this manifest only provides one convenient selection target.
+tests:
+  - s_builtins/s_echo/hello_world_check
+  - s_builtins/s_file/fixture_text
+  - s_builtins/s_json_schema/nested_schema
+  - s_builtins/s_value/resource_output

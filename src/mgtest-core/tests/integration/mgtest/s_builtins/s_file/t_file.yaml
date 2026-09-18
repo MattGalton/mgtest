@@ -1,0 +1,4 @@
+type: FileMatches
+name: fixture_text
+path: "${mgtest:resources.archive.outputs.text_path}"
+equals: "nested suite"

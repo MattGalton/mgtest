@@ -1,0 +1,67 @@
+@startuml
+title mgtest — execution components
+left to right direction
+skinparam componentStyle rectangle
+skinparam shadowing false
+skinparam defaultTextAlignment center
+
+package "Entry points" #D6EAF8 {
+  component "pytest plugin\nengine.runner" as pytest
+  component "run command\ncli.mgtest_run" as runcli
+}
+
+package "Planning" #D5F5E3 {
+  component "Project loading\nproject.loading" as loading
+  component "Project model\nsuites + definitions" as model
+  component "Project compiler\nreferences + validation" as compiler
+  component "Dependency graph\nexecution order" as graph
+}
+
+package "Extensions" #E8DAEF {
+  component "Plugin importer" as importer
+  component "Plugin catalog\nresource and test registries" as catalog
+  component "Built-in and custom\nResourceSpec / TestSpec\nDocker, Git, S3, HTTP, ..." as specs
+}
+
+package "Execution" #FDEBD0 {
+  component "Engine" as engine
+  component "Execution session" as execution
+  component "Resource view\nvisible resources" as resources
+  component "Resource instances\nsetup / teardown" as instances
+  component "Test instances\nrun / outputs" as checks
+}
+
+package "Runtime evidence" #FADBD8 {
+  component "Run workspace" as workspace
+  database ".mgtest/runs/<run-id>\nmanifest, config, logs, outputs" as artifacts
+}
+
+folder "YAML project\nr_*.yaml · t_*.yaml · vars.yaml" as yaml
+folder "Project builtin/\nand installed plugins" as plugins
+cloud "System under test" as sut
+
+pytest --> importer : collect
+runcli --> importer : load
+pytest --> loading
+runcli --> loading
+plugins --> importer
+importer --> catalog
+catalog --> specs
+yaml --> loading
+loading --> model
+model --> compiler
+catalog --> compiler : resolve type
+compiler --> graph
+compiler --> engine : compiled plan
+engine --> execution
+execution --> graph : follow dependencies
+execution --> resources
+resources --> instances : start on demand
+execution --> checks : execute check
+instances --> specs
+checks --> specs
+instances --> sut
+checks --> sut
+execution --> workspace
+workspace --> artifacts
+@enduml

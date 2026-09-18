@@ -1,0 +1,29 @@
+[build-system]
+requires = ["uv_build>=0.11.25,<0.12"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "mgtest_lsp"
+
+[project]
+name = "mgtest-lsp"
+version = "0.1.0"
+description = "Language-server support for mgtest YAML projects"
+requires-python = ">=3.12"
+dependencies = [
+    "mgtest-core>=0.1,<0.2",
+    "python-lsp-server>=1.14,<2",
+]
+
+[project.entry-points.pylsp]
+mgtest = "mgtest_lsp.plugin"
+
+[project.scripts]
+mgtest-lsp = "mgtest_lsp.server:main"
+mgtest-analyse = "mgtest.tooling.analysis:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.uv.sources]
+mgtest-core = { workspace = true }

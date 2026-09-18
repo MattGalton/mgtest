@@ -1,0 +1,4 @@
+type: TemporaryDirectory
+name: workspace
+prefix: mgtest-integration-
+auto_start: true

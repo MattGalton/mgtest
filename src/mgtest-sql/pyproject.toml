@@ -1,0 +1,22 @@
+[build-system]
+requires = ["uv_build>=0.11.25,<0.12"]
+build-backend = "uv_build"
+
+[project]
+name = "mgtest-sql"
+version = "0.1.0"
+description = "PostgreSQL resource and SQL checks for mgtest"
+requires-python = ">=3.12"
+dependencies = ["mgtest-core>=0.1,<0.2", "psycopg[binary]>=3.2,<4"]
+
+[project.entry-points."mgtest.resources"]
+Postgres = "mgtest_sql:Postgres"
+
+[project.entry-points."mgtest.tests"]
+SqlQuery = "mgtest_sql:SqlQuery"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.uv.sources]
+mgtest-core = { workspace = true }

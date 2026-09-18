@@ -1,23 +1,22 @@
 repos:
-  # 🖤 Black: Python code formatter
+  # Black: Python code formatter
   - repo: https://github.com/psf/black
-    rev: 24.10.0        # Use the latest stable tag from https://github.com/psf/black/releases
+    rev: 24.10.0
     hooks:
       - id: black
         language_version: python3.11  # Adjust to your project's Python version
 
-  # 🧹 Ruff: Linter + import sorter (much faster than flake8/isort)
+  # Ruff: Linter + import sorter
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.6.8          # Check https://github.com/astral-sh/ruff-pre-commit/tags for latest
+    rev: v0.6.8
     hooks:
       - id: ruff
         args: [--fix]     # Auto-fix linting issues where possible
-      - id: ruff-format   # Optional: ensure Ruff's formatter agrees with Black
 
-  # 🧠 Mypy: Static type checking
+  # Mypy: Static type checking
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v1.12.0         # Use latest version of mypy mirror
     hooks:
       - id: mypy
         args: [--ignore-missing-imports, --show-error-codes]
-        additional_dependencies: []   # add extra stubs if needed, e.g. ["types-requests"]
+        additional_dependencies: []

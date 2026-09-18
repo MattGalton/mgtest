@@ -1,0 +1,5 @@
+# Test scope creates and cleans up a resource for every individual check.
+type: ResettableFixture
+name: resettable
+scope: Test
+auto_start: true

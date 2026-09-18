@@ -1,0 +1,9 @@
+tests:
+  - type: Equals
+    name: resource_output
+    actual: "${mgtest:resources.value.outputs.number}"
+    expected: 9
+  - type: Equals
+    name: test_output
+    actual: "${mgtest:tests.resource_output.outputs.value}"
+    expected: 9

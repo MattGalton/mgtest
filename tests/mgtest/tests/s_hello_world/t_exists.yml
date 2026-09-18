@@ -1,4 +1,0 @@
-type: StreamRegex
-name: hello_world_check
-resource: echo
-pattern: "Hello World"

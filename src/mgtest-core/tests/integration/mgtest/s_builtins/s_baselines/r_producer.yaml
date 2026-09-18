@@ -1,0 +1,15 @@
+type: Executable
+name: producer
+path: python3
+args:
+  - -u
+  - -c
+  - |
+    import json
+    from pathlib import Path
+    root = Path("${mgtest:resources.workspace.outputs.path}")
+    (root / "tree" / "nested").mkdir(parents=True)
+    (root / "actual.txt").write_text("baseline text\n")
+    (root / "actual.json").write_text(json.dumps({"message": "baseline", "items": [1, 2]}))
+    (root / "tree" / "nested" / "entry.txt").write_text("nested baseline\n")
+    (root / ".finished").write_text("finished\n")

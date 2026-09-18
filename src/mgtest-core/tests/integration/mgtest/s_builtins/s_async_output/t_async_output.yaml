@@ -1,0 +1,24 @@
+# These checks form one progression: wait for completion, inspect output, then
+# compare the final artifact against a nearby checked-in baseline.
+tests:
+  - type: FileExists
+    name: writer_finished
+    depends_on: [resources.writer]
+    path: "${mgtest:resources.workspace.outputs.path}/.finished"
+    timeout: 2
+
+  - type: FileExists
+    name: output_exists
+    path: "${mgtest:resources.workspace.outputs.path}/output.txt"
+    timeout: 1
+
+  - type: FileMatches
+    name: output_contains_final_text
+    path: "${mgtest:resources.workspace.outputs.path}/output.txt"
+    contains: "Y"
+    timeout: 1
+
+  - type: FileBaseline
+    name: output_matches_baseline
+    path: "${mgtest:resources.workspace.outputs.path}/output.txt"
+    baseline: baselines/output.txt

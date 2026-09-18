@@ -1,0 +1,2 @@
+number: 4
+greeting: "${oc.env:MGTEST_GREETING,Hello World}"

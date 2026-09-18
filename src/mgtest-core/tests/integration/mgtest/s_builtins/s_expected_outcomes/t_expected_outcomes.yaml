@@ -1,0 +1,9 @@
+tests:
+  - type: Command
+    name: expected_pass
+    python_command: "print('normal passing check')"
+    stdout_contains: normal passing check
+  - type: Command
+    name: expected_failure
+    python_command: "raise RuntimeError('known issue')"
+    expected_outcome: failed

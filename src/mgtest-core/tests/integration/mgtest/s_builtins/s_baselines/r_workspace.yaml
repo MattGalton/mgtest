@@ -1,0 +1,4 @@
+type: TemporaryDirectory
+name: workspace
+prefix: mgtest-baseline-
+auto_start: true

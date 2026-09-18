@@ -1,0 +1,4 @@
+type: FixtureValue
+name: value
+number: "${vars.number}"
+auto_start: true
