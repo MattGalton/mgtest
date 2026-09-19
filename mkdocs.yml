@@ -1,0 +1,39 @@
+site_name: mgtest
+site_description: Declarative system-test orchestration for pytest
+site_url: https://mattgalton.github.io/mgtest/
+repo_url: https://github.com/MattGalton/mgtest
+repo_name: MattGalton/mgtest
+edit_uri: edit/main/docs/
+theme:
+  name: material
+  language: en
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: teal
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: teal
+  features:
+    - navigation.footer
+    - navigation.tabs
+    - content.code.copy
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.superfences
+nav:
+  - Overview: index.md
+  - Write checks: authoring.md
+  - Run and inspect: running.md
+  - Integrations: integrations.md
+  - Extend mgtest: extending.md
