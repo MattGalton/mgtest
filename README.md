@@ -1,49 +1,69 @@
 # mgtest
 
+[![CI](https://github.com/MattGalton/mgtest/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/MattGalton/mgtest/actions/workflows/ci.yml)
+
 > [!WARNING]
-> This is a vibe-coded repository.
-
-**Describe how your system behaves. Run it with pytest.**
-
-[View CI checks](https://github.com/MattGalton/mgtest/actions/workflows/ci.yml)
-
-mgtest makes system tests readable, composable YAML. It starts the things a check
-needs, waits for the behaviour you care about, and leaves behind the evidence when
-something fails. Each YAML check is collected as an ordinary pytest test, so it fits
-the workflow your team already uses.
+> This is a vibe-coded repository, intended as a spiritual successor to [QMTest](https://github.com/SourceryTools/qmtest).
 
 <p align="center">
-  <img src="docs/diagrams/run-flow.svg" alt="A YAML project is planned by mgtest; resources and checks run in dependency order; run evidence is saved." width="900">
+  <img src="docs/diagrams/what-is-mgtest.svg" alt="mgtest is a declarative integration-test framework for pytest: define resources, checks, and expectations in YAML, then run them as ordinary pytest tests." width="900">
 </p>
 
-## Why mgtest?
+<p align="center">
+  <img src="docs/diagrams/why-mgtest.svg" alt="mgtest helps teams write only the tests they need, version expectations alongside code, reproduce the same setup locally and in CI, and retain useful evidence from integration-test failures." width="900">
+</p>
 
-| Write what matters | Keep tests dependable | Use the tools you have |
-| --- | --- | --- |
-| Model services, inputs, checks, and their dependencies in YAML. | Resources start only when needed and are cleaned up according to their scope. | Run through `pytest` or `mgtest`; use built-ins, optional integrations, or Python extensions. |
+> [!TIP]
+> **Start with the [documentation guide](https://mattgalton.github.io/mgtest/).** It explains authoring, running, integrations, evidence, and extensions.
 
 ## Get started
 
-Python 3.12+ is required. Add the core package, create a project, and run it:
+Python 3.12+ and Docker are required. Add the core framework and Docker integration,
+then create a project:
 
 ```sh
-uv add mgtest-core
+uv add mgtest-core mgtest-docker
 uv run mgtest init ./mgtest
-uv run pytest mgtest -v
 ```
 
-Put a check in the generated `mgtest` directory:
+Here is a Docker-backed pizza-shop menu provider. Add these two files to the project
+created above.
 
 ```yaml
-# mgtest/t_health.yaml
-type: HttpRequest
-name: service_is_healthy
-url: http://localhost:8080/health
-expected_status: 200
-json_equals: {status: ready}
+# mgtest/r_pizza_shop.yaml
+type: DockerContainer
+name: PizzaShopMenuProvider
+image: mendhak/http-https-echo:41
+ports: {8080: 8088}
+auto_start: true
 ```
 
-The same project can run directly with `uv run mgtest run mgtest`.
+```yaml
+# mgtest/t_pizza_shop.yaml
+tests:
+  - type: HttpRequest
+    name: pizza_shop_is_ready
+    url: http://127.0.0.1:8088/health
+    expected_status: 200
+    body_contains: '"path": "/health"'
+    timeout: 15
+    interval: 0.25
+
+  - type: HttpRequest
+    name: margherita_can_be_ordered
+    url: http://127.0.0.1:8088/menu/margherita
+    expected_status: 200
+    body_contains: '"path": "/menu/margherita"'
+```
+
+The first check retries until the provider
+accepts its health request. The second runs only after that and verifies a concrete
+GET route for the Margherita menu item.
+
+```sh
+uv run pytest mgtest -v
+# Or: uv run mgtest run mgtest
+```
 
 ## Batteries included, integrations optional
 
