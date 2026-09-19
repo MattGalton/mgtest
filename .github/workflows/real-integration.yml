@@ -1,0 +1,39 @@
+name: Real integration
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  real-integration:
+    runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: mgtest
+      AWS_SECRET_ACCESS_KEY: mgtest-secret
+      AWS_DEFAULT_REGION: us-east-1
+      MGT_REAL_S3_ENDPOINT: http://127.0.0.1:9000
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
+        with:
+          python-version: "3.12"
+      - run: uv sync --all-packages --group dev
+      - name: Start MinIO
+        run: >-
+          docker run --detach --name mgtest-minio --publish 9000:9000
+          --env MINIO_ROOT_USER=mgtest --env MINIO_ROOT_PASSWORD=mgtest-secret
+          minio/minio@sha256:a1ea29fa28355559ef137d71fc570e508a214ec84ff8083e39bc5428980b015e server /data
+      - name: Wait for MinIO
+        run: |
+          for attempt in {1..30}; do
+            curl --fail --silent http://127.0.0.1:9000/minio/health/live && exit 0
+            sleep 1
+          done
+          docker logs mgtest-minio
+          exit 1
+      - run: uv run pytest -q tests/real_integration
+      - name: Stop MinIO
+        if: always()
+        run: docker rm --force mgtest-minio

@@ -24,6 +24,9 @@ testpaths = [
     "src/mgtest-nats/tests",
     "src/mgtest-lsp/tests",
 ]
+markers = [
+    "real_integration: requires Docker and a configured S3-compatible endpoint",
+]
 
 [tool.ruff]
 line-length = 100

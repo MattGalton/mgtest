@@ -540,6 +540,16 @@ but starts resources only for the selected checks and their runtime dependencies
 Python 3.12+ is required. In this repository, run `uv sync --all-packages` to install
 every workspace package, then `uv run pytest`.
 
-The workspace root collects each package's `tests/` directory. There is no aggregate
-top-level test package; running pytest from an individual package uses that package's
-own `pyproject.toml` test path.
+The workspace root collects each package's `tests/` directory. The only top-level tests
+are the opt-in real integration checks below; running pytest from an individual package
+uses that package's own `pyproject.toml` test path.
+
+### Real integration lane
+
+The normal test matrix keeps its mocked integration tests fast. The manually triggered
+`Real integration` GitHub Actions workflow starts MinIO, then runs
+`tests/real_integration` against real Docker, Redis, PostgreSQL, and S3-compatible
+services. It is intentionally separate from pull-request CI because it pulls images
+and creates containers. To run the same checks locally, start an S3-compatible service
+and set `MGT_REAL_S3_ENDPOINT`, `AWS_ACCESS_KEY_ID`, and `AWS_SECRET_ACCESS_KEY` before
+running `uv run pytest tests/real_integration`.
