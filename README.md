@@ -5,6 +5,9 @@
 > [!WARNING]
 > This is a vibe-coded repository, intended as a spiritual successor to [QMTest](https://github.com/SourceryTools/qmtest).
 
+> [!WARNING]
+> There is no "secret key" stripping of output. Save your run logs at your own risk!
+
 <p align="center">
   <img src="docs/diagrams/what-is-mgtest.svg" alt="mgtest is a declarative integration-test framework for pytest: define resources, checks, and expectations in YAML, then run them as ordinary pytest tests." width="900">
 </p>
